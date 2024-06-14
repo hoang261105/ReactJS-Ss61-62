@@ -168,6 +168,29 @@ export default function App() {
     if (tab === "incompleted") return work.status === false;
     return true;
   });
+
+  // Hàm xóa công việc đã hoàn thành
+  const handleDelelteWorkCompleted = () => {
+    const completedWorks = works.filter((work) => work.status === true);
+    const deletePromises = completedWorks.map((work) =>
+      axios.delete(`http://localhost:8080/works/${work.id}`)
+    );
+    Promise.all(deletePromises)
+      .then(() => {
+        loadData();
+      })
+      .catch((err) => console.log(err));
+  };
+
+  // Hàm xóa tất cả công việc
+  const handleDeleteAll = () => {
+    axios
+      .delete("http://localhost:8080/works")
+      .then(() => {
+        loadData();
+      })
+      .catch((err) => console.log(err));
+  };
   return (
     <>
       {check ? <Loading /> : ""}
@@ -241,7 +264,7 @@ export default function App() {
                       height: 40,
                       color: "white",
                     }}
-                    onClick={() => console.log("Xóa công việc hoàn thành")}
+                    onClick={handleDelelteWorkCompleted}
                   >
                     Xóa công việc hoàn thành
                   </button>
@@ -253,7 +276,7 @@ export default function App() {
                       height: 40,
                       color: "white",
                     }}
-                    onClick={() => console.log("Xóa tất cả công việc")}
+                    onClick={handleDeleteAll}
                   >
                     Xóa tất cả công việc
                   </button>
